@@ -6,7 +6,8 @@ class CreditCard extends Component {
     constructor() {
         super();
         this.state = {
-            cardType: ''
+            cardType: '',
+            cardValid: ''
         };
     }
 
@@ -16,6 +17,7 @@ class CreditCard extends Component {
                 <label>Credit card </label>
                 <input
                     type="number"
+
                     {...field.input}
 
                     onChange={event => {
@@ -27,42 +29,107 @@ class CreditCard extends Component {
     }
 
     onSubmit(event) {
+        // Check that the form has a value
         if(typeof event.cardNumber !== 'undefined'){
+            // If the length is 16 make sure the user can't enter any other values
+            if(event.cardNumber.length > 16) {
+                event.cardNumber = event.cardNumber.slice(0,16)
+            }
+
+            // Switch statement to check what sort of card the user has based on provided information
             switch(true){
                 case event.cardNumber.charAt(0) === '4':
                     this.setState({cardType: 'Visa'});
+                    if(event.cardNumber.length === 13 || event.cardNumber.length === 16){
+                        this.valid_credit_card(event.cardNumber);
+                    }
                     break;
                 case event.cardNumber.substring(0,2) > '50' && event.cardNumber.substring(0,2) < '56':
                     this.setState({cardType: 'MasterCard'});
+                    if(event.cardNumber.length === 16){
+                        this.valid_credit_card(event.cardNumber);
+                    }
                     break;
                 case event.cardNumber.substring(0,2) === '34' || event.cardNumber.substring(0,2) === '37':
                     this.setState({cardType: 'AMEX'});
+                    if(event.cardNumber.length === 15){
+                        this.valid_credit_card(event.cardNumber);
+                    }
                     break;
                 case event.cardNumber.substring(0,4) === '6011' :
                     this.setState({cardType: 'Discover'});
+                    if(event.cardNumber.length === 16){
+                        this.valid_credit_card(event.cardNumber);
+                    }
                     break;
                 default:
                     this.setState({cardType: ''});
                     break;
             }
         } else {
-            this.setState({cardType: ''});
+            this.setState({cardType: '', cardValid: ''});
         }
+
+
     }
+
+    // Function not written by myself but will comment each line to show I know what is going on, I wrote the switch
+    valid_credit_card(value) {
+    console.log('value?', value);
+    // accept only digits, dashes or spaces, this could be left out since I'm using type=number but have left it in
+    if (/[^0-9-\s]+/.test(value)) return false;
+
+    // The Luhn Algorithm.
+    /*
+        nCheck is the global variable to add up for the step 3 to see if it's a multiple of 10, nDigit is the
+        number that will be multiplied and bEven is just to run the multiplication over every other digit. This doesn't
+        necessarily mean it's odd/even. Set to false so it only adds the first digit
+    */
+    var nCheck = 0, nDigit = 0, bEven = false;
+    value = value.replace(/\D/g, "");
+
+    for (var n = value.length - 1; n >= 0; n--) {
+
+        // Get the character at n place (eg 3 if the number was 4408 0412 3456 7893 like in the example pdf)
+        var cDigit = value.charAt(n);
+
+        // Sanitise
+        nDigit = parseInt(cDigit, 10);
+
+        /*
+            This is where I was going about the task differently but found this to be more concise. Instead of having to
+            go through and split numbers higher than 10 and add the numbers together (eg 7 would become 14, then in step
+            two you would do 1+4) simply subtract by 9 if it's double digits :)
+
+        */
+        if (bEven) {
+            if ((nDigit *= 2) > 9) nDigit -= 9;
+        }
+
+        // Add the number to the overall value to be checked later and switch the bEven back to true/false
+        nCheck += nDigit;
+        bEven = !bEven;
+    }
+
+    // Check if if is divisible by 10 with no remainder, if true set the cardValidity to true, otherwise set it to false
+    if((nCheck % 10) === 0){
+        this.setState({cardValid: 'true'});
+    } else {
+        this.setState({cardValid: 'false'});
+    }
+
+    return;
+}
 
 
 render() {
 
     const {handleSubmit} = this.props;
-
-    // console.log('this.state', this.state);
-    // console.log('this.props', this.props);
     return ([
         <form key={0}>
             <Field
                 name="cardNumber"
                 component={this.renderUserField}
-
                 //Had to wrap this in a timeout because the event was being triggered before the value was there
                 onChange={ event => {
                     setTimeout(handleSubmit(this.onSubmit.bind(this)));
@@ -71,7 +138,11 @@ render() {
             />
         </form>,
         <div key={1}>
+            {/*
+                Update the card type when applicable
+             */}
             {this.state.cardType}
+            {this.state.cardValid}
         </div>
     ]);
 }
@@ -82,56 +153,3 @@ export default reduxForm({
     form: 'CreditCardNumber',
     fields: ['cardNumber']
 })(CreditCard);
-
-
-
-
-
-
-
-
-
-// onSubmit(event) {
-//     if(typeof event.users !== 'undefined' && event.users.length >= 3){
-//         this.setState({data: ['Loading data']});
-//         fetch(''+baseURI+event.users+'&per_page=100').then((response) => {
-//             return response.json()
-//         })
-//             .then((json) => {
-//                 this.setState({data: json.items});
-//             })
-//     } else if (typeof event.users!== 'undefined' && event.users.length < 3){
-//         this.setState({data: []});
-//     }
-// }
-
-// render () {
-//     let responseData = '';
-//     if(this.state.data && this.state.data[0] !== 'Loading data') {
-//         responseData = (this.state.data).map(function(items){
-//             return <tr key={items.id} >
-//                 <td>
-//                     <img style={{width: 50, height: 50}} src={items.avatar_url} alt={items.avatar_url}/>
-//                 </td>
-//                 <td>
-//                     {items.login}
-//                 </td>
-//                 <td>
-//                     {items.type}
-//                 </td>
-//                 <td>
-//                     {items.score}
-//                 </td>
-//             </tr>
-//         });
-//     } else if (this.state.data && this.state.data[0] === 'Loading data') {
-//         responseData = <tr><td>Loading...</td></tr>
-//     }
-//
-//
-// }
-// }
-
-// export default reduxForm({
-//     form: 'SearchUsers'
-// })(Search);
