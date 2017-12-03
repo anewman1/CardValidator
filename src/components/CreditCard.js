@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { Field, reduxForm } from 'redux-form';
 
+
 class CreditCard extends Component {
 
     constructor() {
@@ -14,10 +15,10 @@ class CreditCard extends Component {
     renderUserField(field) {
         return (
             <div>
-                <label>Credit card </label>
+                <label>Please validate your Credit Card number : </label>
                 <input
                     type="number"
-
+                    placeholder="Credit card number"
                     {...field.input}
 
                     onChange={event => {
@@ -113,9 +114,9 @@ class CreditCard extends Component {
 
     // Check if if is divisible by 10 with no remainder, if true set the cardValidity to true, otherwise set it to false
     if((nCheck % 10) === 0){
-        this.setState({cardValid: 'true'});
+        this.setState({cardValid: 'valid'});
     } else {
-        this.setState({cardValid: 'false'});
+        this.setState({cardValid: 'invalid'});
     }
 
     return;
@@ -129,6 +130,7 @@ render() {
         <form key={0}>
             <Field
                 name="cardNumber"
+                className="cardField"
                 component={this.renderUserField}
                 //Had to wrap this in a timeout because the event was being triggered before the value was there
                 onChange={ event => {
@@ -137,19 +139,19 @@ render() {
                 }}
             />
         </form>,
-        <div key={1}>
-            {/*
-                Update the card type when applicable
-             */}
-            {this.state.cardType}
-            {this.state.cardValid}
+        <div key={2} className="card-validity">
+            <div key={1} className={this.state.cardType ? 'card ' + this.state.cardType : 'card'}>
+            </div>
+            <div className={this.state.cardValid}>
+            </div>
+            <div className="validity-text">{this.state.cardValid}</div>
         </div>
     ]);
 }
 
 }
 
+
 export default reduxForm({
-    form: 'CreditCardNumber',
-    fields: ['cardNumber']
+    form: 'CreditCardNumber'
 })(CreditCard);

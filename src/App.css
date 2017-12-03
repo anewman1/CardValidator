@@ -26,3 +26,85 @@
   from { transform: rotate(0deg); }
   to { transform: rotate(360deg); }
 }
+
+input[type=number]::-webkit-inner-spin-button,
+input[type=number]::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  margin: 0;
+}
+.card-validity {
+  display: inline-block;
+  width: 100%;
+  margin: 16px;
+  text-align: center;
+}
+.card {
+  max-width: 50px;
+}
+.validity-text {
+  height: 50px;
+  display: inline-block;
+  min-width: 50px;
+}
+.Visa {
+  vertical-align: middle;
+  display: inline-block;
+  background-image: url("images/visa.png");
+  height: 50px;
+  min-width: 80px;
+  background-size: contain;
+  background-position: center center;
+  background-repeat: no-repeat;
+}
+.MasterCard {
+  vertical-align: middle;
+  display: inline-block;
+  background-image: url("images/mastercard.png");
+  height: 50px;
+  min-width: 80px;
+  background-size: cover;
+  background-position: center center;
+  background-repeat: no-repeat;
+}
+.AMEX {
+  vertical-align: middle;
+  display: inline-block;
+  background-image: url("images/amex.png");
+  height: 50px;
+  min-width: 80px;
+  background-size: cover;
+  background-position: center center;
+  background-repeat: no-repeat;
+}
+.Discover {
+  vertical-align: middle;
+  display: inline-block;
+  background-image: url("images/discover.png");
+  height: 50px;
+  min-width: 80px;
+  background-size: cover;
+  background-position: center center;
+}
+
+.valid {
+  vertical-align: middle;
+  display: inline-block;
+  height: 25px;
+  min-width: 50px;
+  background-image: url("images/valid.png");
+  background-position: center center;
+  background-size: contain;
+  background-repeat: no-repeat;
+}
+.invalid {
+  vertical-align: middle;
+  display: inline-block;
+  height: 25px;
+  min-width: 50px;
+  background-image: url("images/invalid.png");
+  background-position: center center;
+  background-size: contain;
+  background-repeat: no-repeat;
+}
