@@ -6,7 +6,7 @@ class CreditCard extends Component {
     constructor() {
         super();
         this.state = {
-            data: []
+            cardType: ''
         };
     }
 
@@ -28,24 +28,25 @@ class CreditCard extends Component {
 
     onSubmit(event) {
         if(typeof event.cardNumber !== 'undefined'){
-            console.log(event.cardNumber.substring(0,2));
             switch(true){
                 case event.cardNumber.charAt(0) === '4':
-                    console.log('Visa!');
+                    this.setState({cardType: 'Visa'});
                     break;
                 case event.cardNumber.substring(0,2) > '50' && event.cardNumber.substring(0,2) < '56':
-                    console.log('MasterCard');
+                    this.setState({cardType: 'MasterCard'});
                     break;
                 case event.cardNumber.substring(0,2) === '34' || event.cardNumber.substring(0,2) === '37':
-                    console.log('AMEX');
+                    this.setState({cardType: 'AMEX'});
                     break;
                 case event.cardNumber.substring(0,4) === '6011' :
-                    console.log('Discover');
+                    this.setState({cardType: 'Discover'});
                     break;
                 default:
-                    console.log('nope');
+                    this.setState({cardType: ''});
                     break;
             }
+        } else {
+            this.setState({cardType: ''});
         }
     }
 
@@ -54,8 +55,10 @@ render() {
 
     const {handleSubmit} = this.props;
 
-    return (
-        <form>
+    // console.log('this.state', this.state);
+    // console.log('this.props', this.props);
+    return ([
+        <form key={0}>
             <Field
                 name="cardNumber"
                 component={this.renderUserField}
@@ -66,8 +69,11 @@ render() {
 
                 }}
             />
-        </form>
-    );
+        </form>,
+        <div key={1}>
+            {this.state.cardType}
+        </div>
+    ]);
 }
 
 }
