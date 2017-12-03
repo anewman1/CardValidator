@@ -28,31 +28,25 @@ class CreditCard extends Component {
 
     onSubmit(event) {
         if(typeof event.cardNumber !== 'undefined'){
+            console.log(event.cardNumber.substring(0,2));
             switch(true){
                 case event.cardNumber.charAt(0) === '4':
                     console.log('Visa!');
                     break;
-                case event.cardNumber.charAt(0) === '5' &&
-                     event.cardNumber.charAt(1) > 0 && event.cardNumber.charAt(1) < 6 :
+                case event.cardNumber.substring(0,2) > '50' && event.cardNumber.substring(0,2) < '56':
                     console.log('MasterCard');
+                    break;
+                case event.cardNumber.substring(0,2) === '34' || event.cardNumber.substring(0,2) === '37':
+                    console.log('AMEX');
+                    break;
+                case event.cardNumber.substring(0,4) === '6011' :
+                    console.log('Discover');
                     break;
                 default:
                     console.log('nope');
                     break;
-
             }
         }
-        // if(typeof event.users !== 'undefined' && event.users.length >= 3){
-        //     this.setState({data: ['Loading data']});
-        //     fetch(''+baseURI+event.users+'&per_page=100').then((response) => {
-        //         return response.json()
-        //     })
-        //         .then((json) => {
-        //             this.setState({data: json.items});
-        //         })
-        // } else if (typeof event.users!== 'undefined' && event.users.length < 3){
-        //     this.setState({data: []});
-        // }
     }
 
 
